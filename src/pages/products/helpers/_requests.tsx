@@ -13,3 +13,7 @@ export async function getDocument(id: any) {
 export async function updateDocument(id: any, values: any) {
   return axios.put(`${baseUrl}/update/${id}`, values);
 }
+export async function uploadFile(form: FormData) {
+  return axios.put(`${baseUrl}/upload/`, form);
+
+}
