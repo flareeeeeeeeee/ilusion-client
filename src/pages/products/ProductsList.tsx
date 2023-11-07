@@ -40,7 +40,7 @@ const ListWrapper = () => {
             if (term) {
               helpers.setFilters({
                 // "email": term,
-                // "name": term
+                "name": term
               });
             } else {
               helpers.setFilters({});

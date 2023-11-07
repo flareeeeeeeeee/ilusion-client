@@ -7,34 +7,43 @@ import { ListLoading } from "../../_metronic/helpers/components/table/components
 
 import { useNavigate, useParams } from "react-router-dom";
 import { getDocument, updateDocument } from "./helpers/_requests";
+import InputFile from "../../_metronic/helpers/components/inputs/Image";
+import Select from "../../_metronic/helpers/components/inputs/Select";
+import { uploadFile } from "../../helpers/files";
 
 const EditDocumentWrappeer = () => {
   const navigate = useNavigate();
 
   const params = useParams();
   const [isLoading, setIslOading] = useState(true);
+  const [image, setImage] = useState<any>(null)
+
   const [document, setDocument] = useState(initialValues);
   const id = params.id;
 
   const fetchDocument = useCallback(async () => {
     setIslOading(true);
     const query = await getDocument(id);
-    setDocument(query.data);
+    const product = query.data
+    setDocument(product);
+    if (product.images.length) {
+      setImage(product.images[0])
+    }
     setIslOading(false);
   }, [id]);
   useEffect(() => {
     fetchDocument();
   }, []);
 
-  async function onSubmit(values: any, formikHelpers: any) {
+  async function onSubmit(values: any) {
     try {
- 
-      const payload = {
-        name: values.name,
-        email: values.email,
-      };
-      await updateDocument(id, payload);
-      navigate("/users");
+      if (image) {
+        const filepath = await uploadFile(image)
+        values.images = [filepath]
+      }
+
+      await updateDocument(id, values);
+      navigate("/products");
     } catch (err) {
       console.log(err);
     }
@@ -54,6 +63,17 @@ const EditDocumentWrappeer = () => {
             <form onSubmit={formik.handleSubmit}>
               <div className="row mb-6 ms-0 px-0">
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Foto
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <InputFile
+                    image={image}
+                    onChange={setImage}
+                  />
+                </div>
+              </div>
+              <div className="row mb-6 ms-0 px-0">
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
                   Nombre
                 </label>
                 <div className="col-lg-4 fv-row mt-4 ">
@@ -65,19 +85,56 @@ const EditDocumentWrappeer = () => {
                   />
                 </div>
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
-                  Email
+                  Categoria
                 </label>
-                <div className="col-lg-4 fv-row mt-4">
-                  <Field
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Select
                     form={formik}
-                    name="email"
-                    placeholder="email"
-                    type="email"
+                    name="category"
+                    placeholder="category"
+                    source="categories"
                   />
                 </div>
               </div>
 
-              <div className="text-right w-100 pt-15 d-flex justify-content-end">
+              <div className="row mb-6 ms-0 px-0">
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Descripcion
+                </label>
+                <div className="col-lg-10 fv-row mt-4">
+                  <Field
+                    form={formik}
+                    name="description"
+                    placeholder="Descripcion"
+                  />
+                </div>
+              </div>
+              <div className="row mb-6 ms-0 px-0">
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Precio
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Field
+                    form={formik}
+                    name="prize"
+                    placeholder="Precio"
+                    type="number"
+                  />
+                </div>
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Unidades
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Field
+                    form={formik}
+                    name="units"
+                    placeholder="Unidades"
+                    type="number"
+                  />
+                </div>
+              </div>
+
+              <div className="text-right w-100 pt-lg-15 d-flex justify-content-end">
                 <button
                   type="reset"
                   onClick={() => navigate("..")}

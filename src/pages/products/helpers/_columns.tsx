@@ -44,7 +44,7 @@ const Columns: ReadonlyArray<Column<Object>> = [
       return (
         <div className="px-2">
           <Link
-            to={`/users/edit/${row.original._id}`}
+            to={`../edit/${row.original._id}`}
             className="btn btn-secondary btn-sm me-2 mb-2 hover-elevate-down"
           >
             Editar

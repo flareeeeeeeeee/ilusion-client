@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import { Base64 } from "js-base64";
 
@@ -9,10 +9,19 @@ import { ListLoading } from "../../_metronic/helpers/components/table/components
 
 import { useNavigate } from "react-router-dom";
 import { createDocument } from "./helpers/_requests";
+import InputFile from "../../_metronic/helpers/components/inputs/Image";
+import { uploadFile } from "../../helpers/files";
 
 const NewDocumentWrappeer = () => {
   const navigate = useNavigate();
-  async function onSubmit(values: any, formikHelpers: any) {
+
+  const [image, setImage] = useState(null)
+  async function onSubmit(values: any) {
+    if (image) {
+      const filepath = await uploadFile(image)
+      values.images = [filepath]
+    }
+
     await createDocument(values);
     navigate("/products");
   }
@@ -27,6 +36,16 @@ const NewDocumentWrappeer = () => {
         <Form>
           <div className="px-10 pt-lg-10">
             <form onSubmit={formik.handleSubmit}>
+              <div className="row mb-6 ms-0 px-0">
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Foto
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <InputFile
+                    onChange={setImage}
+                  />
+                </div>
+              </div>
               <div className="row mb-6 ms-0 px-0">
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
                   Nombre
