@@ -22,21 +22,23 @@ const Columns: ReadonlyArray<Column<Object>> = [
   },
   {
     Header: "Precio",
-    accessor: "prize",
+    accessor: "price",
+    Cell: ({ value }) => {
+      return <div>Q {(value || "").toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>;
+    }
   },
   {
-    Header: "Unidades",
-    accessor: "units",
+    Header: "Unidades en Espanol",
+    accessor: "esp_stock",
+  },
+  {
+    Header: "Unidades en Ingles",
+    accessor: "eng_stock",
   },
   {
     Header: "Estado",
     accessor: "status",
   },
-  {
-    Header: "Fecha de Salida",
-    accessor: "release_date",
-  },
-
   {
     Header: "Acciones",
     id: "actions",
@@ -44,7 +46,7 @@ const Columns: ReadonlyArray<Column<Object>> = [
       return (
         <div className="px-2">
           <Link
-            to={`../edit/${row.original._id}`}
+            to={`../edit/${row.original.id}`}
             className="btn btn-secondary btn-sm me-2 mb-2 hover-elevate-down"
           >
             Editar

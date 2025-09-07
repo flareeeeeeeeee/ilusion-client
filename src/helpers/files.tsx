@@ -30,10 +30,9 @@ const storage = getStorage(app);
 export function uploadFile(file: File) {
     return new Promise((resolve, reject) => {
 
-        // 'file' comes from the Blob or File API
         const storageRef = ref(storage, file.name);
 
-        uploadBytes(storageRef, file).then((snapshot) => {
+        uploadBytes(storageRef, file).then(() => {
             getDownloadURL(storageRef).then(url =>{
                 console.log(url)
                 resolve(url)

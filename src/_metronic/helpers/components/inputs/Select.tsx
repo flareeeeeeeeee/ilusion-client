@@ -10,7 +10,7 @@ type Props = {
   name: string;
   type?: string;
   placeholder?: string;
-  source: string;
+  source?: string;
   options?: Array<{}>;
   optionsFilter?: Function;
   parent?: string;
@@ -34,14 +34,14 @@ export default function Field({
 
   const fetchOptions = useCallback(async () => {
     setIsLoading(true);
-
-    const baseUrl = `${import.meta.env.VITE_API_URL}/${source}/select`;
-
-    const query = await axios.get(baseUrl);
-    const result = query.data;
-    const _options = result;
-    setOptions(_options);
-    setIsLoading(false);
+    if (source) {
+      const baseUrl = `${import.meta.env.VITE_API_URL}/${source}/select`;
+      const query = await axios.get(baseUrl);
+      const result = query.data;
+      const _options = result;
+      setOptions(_options);
+      setIsLoading(false);
+    }
   }, [source]);
 
   useEffect(() => {

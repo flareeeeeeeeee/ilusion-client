@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Form, Formik, FormikHelpers } from "formik";
+import { useCallback, useEffect, useState } from "react";
+import { Form, Formik } from "formik";
 
 import { EditSchema, initialValues } from "./helpers/_schemas";
 import Field from "../../_metronic/helpers/components/inputs/Field";
+
 import { ListLoading } from "../../_metronic/helpers/components/table/components/loading/ListLoading";
 
 import { useNavigate, useParams } from "react-router-dom";
@@ -17,6 +18,7 @@ const EditDocumentWrappeer = () => {
   const params = useParams();
   const [isLoading, setIslOading] = useState(true);
   const [image, setImage] = useState<any>(null)
+  const [newImage, setNewImage] = useState<any>(null)
 
   const [document, setDocument] = useState(initialValues);
   const id = params.id;
@@ -31,13 +33,14 @@ const EditDocumentWrappeer = () => {
     }
     setIslOading(false);
   }, [id]);
+
   useEffect(() => {
     fetchDocument();
   }, []);
 
   async function onSubmit(values: any) {
     try {
-      if (image) {
+      if (image && newImage) {
         const filepath = await uploadFile(image)
         values.images = [filepath]
       }
@@ -59,6 +62,9 @@ const EditDocumentWrappeer = () => {
     >
       {(formik) => (
         <Form>
+          {import.meta.env.MODE === "development" && (JSON.stringify(formik.errors))}
+          {import.meta.env.MODE === "development" && (JSON.stringify(formik.values))}
+
           <div className="px-10 pt-lg-10">
             <form onSubmit={formik.handleSubmit}>
               <div className="row mb-6 ms-0 px-0">
@@ -68,7 +74,10 @@ const EditDocumentWrappeer = () => {
                 <div className="col-lg-4 fv-row mt-4 ">
                   <InputFile
                     image={image}
-                    onChange={setImage}
+                    onChange={(file: any) => {
+                      setNewImage(file)
+                      setImage(file)
+                    }}
                   />
                 </div>
               </div>
@@ -111,23 +120,49 @@ const EditDocumentWrappeer = () => {
               </div>
               <div className="row mb-6 ms-0 px-0">
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Estado
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Select
+                    form={formik}
+                    name="status"
+                    placeholder="Estado"
+                    options={[
+                      { name: "Borrador", id: "draft" },
+                      { name: "Publicado", id: "published" },
+                      { name: "Agotado", id: "out_of_stock" },
+                    ]}
+                  />
+                </div>
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
                   Precio
                 </label>
                 <div className="col-lg-4 fv-row mt-4 ">
                   <Field
                     form={formik}
-                    name="prize"
+                    name="price"
                     placeholder="Precio"
                     type="number"
                   />
                 </div>
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
-                  Unidades
+                  Unidades en Espanol
                 </label>
                 <div className="col-lg-4 fv-row mt-4 ">
                   <Field
                     form={formik}
-                    name="units"
+                    name="esp_stock"
+                    placeholder="Unidades"
+                    type="number"
+                  />
+                </div>
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Unidades en Ingles
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Field
+                    form={formik}
+                    name="eng_stock"
                     placeholder="Unidades"
                     type="number"
                   />
@@ -151,8 +186,7 @@ const EditDocumentWrappeer = () => {
                     e.preventDefault();
                     formik.handleSubmit();
                   }}
-                  disabled={formik.isSubmitting || !formik.isValid ||
-                    !formik.touched}
+                  disabled={formik.isSubmitting || !formik.isValid || !formik.touched}
                 >
                   <span className="indicator-label">Editar</span>
                   {(formik.isSubmitting) && (

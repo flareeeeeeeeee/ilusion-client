@@ -12,6 +12,6 @@ export const EditSchema = yup.object().shape({
 export const initialValues = {
     name: "",
     description: "",
-    category: "",
-
+    category: 0,
+    status: "draft",
 }

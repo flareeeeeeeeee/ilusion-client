@@ -85,23 +85,49 @@ const NewDocumentWrappeer = () => {
               </div>
               <div className="row mb-6 ms-0 px-0">
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Estado
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Select
+                    form={formik}
+                    name="status"
+                    placeholder="Estado"
+                    options={[
+                      { name: "Borrador", id: "draft" },
+                      { name: "Publicado", id: "published" },
+                      { name: "Agotado", id: "out_of_stock" },
+                    ]}
+                  />
+                </div>
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
                   Precio
                 </label>
                 <div className="col-lg-4 fv-row mt-4 ">
                   <Field
                     form={formik}
-                    name="prize"
+                    name="price"
                     placeholder="Precio"
                     type="number"
                   />
                 </div>
                 <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
-                  Unidades
+                  Unidades en Espanol
                 </label>
                 <div className="col-lg-4 fv-row mt-4 ">
                   <Field
                     form={formik}
-                    name="units"
+                    name="esp_stock"
+                    placeholder="Unidades"
+                    type="number"
+                  />
+                </div>
+                <label className="col-sm-12 col-lg-2 col-form-label required fw-bold fs-6 mt-4">
+                  Unidades en Ingles
+                </label>
+                <div className="col-lg-4 fv-row mt-4 ">
+                  <Field
+                    form={formik}
+                    name="eng_stock"
                     placeholder="Unidades"
                     type="number"
                   />
